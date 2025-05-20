@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c6027fe8-03d4-47d1-9f51-71ba69d1a35b" name="Changes" comment="feat: add WebclientConfig">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/easycode.ignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/src/main/java/org/example/apigateway/config/WebClientConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/test/java/org/example/apigateway/ApiGatewayApplicationTests.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "phuclm-dev2302"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/phuclm-dev2302/Smart_Home.git",
+    "accountId": "66673c4c-55d6-45ce-abac-b7be794c2c9c"
+  }
+}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2xLaYKb1cHo2KKbfZtk7VeAFdsR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.auth-service [clean].executor": "Run",
+    "Maven.auth-service [install].executor": "Run",
+    "Maven.auth-service [validate].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.ApiGatewayApplication.executor": "Run",
+    "Spring Boot.AuthServiceApplication.executor": "Run",
+    "Spring Boot.DiscoveryServerApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "jdk.selected.JAVA_MODULE": "22",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/SmartNest",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "configurable.group.tools",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\SmartHome\auth-service\src\main\java\org\example\authservice" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\SmartHome\auth-service\src\main\java" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.ApiGatewayApplication">
+    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="api-gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.apigateway.ApiGatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AuthServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="auth-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.authservice.AuthServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DiscoveryServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="discovery-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.discoveryserver.DiscoveryServerApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.discoveryserver.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Spring Boot.ApiGatewayApplication" />
+      <item itemvalue="Spring Boot.AuthServiceApplication" />
+      <item itemvalue="Spring Boot.DiscoveryServerApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.DiscoveryServerApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.387" />
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.387" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c6027fe8-03d4-47d1-9f51-71ba69d1a35b" name="Changes" comment="" />
+      <created>1747719854258</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1747719854258</updated>
+      <workItem from="1747719855368" duration="21596000" />
+      <workItem from="1747747908838" duration="210000" />
+      <workItem from="1747748128301" duration="836000" />
+      <workItem from="1747748996657" duration="1946000" />
+    </task>
+    <task id="LOCAL-00001" summary="add pom.xml">
+      <option name="closed" value="true" />
+      <created>1747750671659</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750671659</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat: add keycloackService">
+      <option name="closed" value="true" />
+      <created>1747750686039</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750686039</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat: add LoginRequest">
+      <option name="closed" value="true" />
+      <created>1747750693656</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750693656</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat: add LoginResponse">
+      <option name="closed" value="true" />
+      <created>1747750712655</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750712655</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat: add init ApiGatewayApplication">
+      <option name="closed" value="true" />
+      <created>1747750727351</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750727351</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat: add AuthSecurityConfig used Spring webflux">
+      <option name="closed" value="true" />
+      <created>1747750792889</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750792889</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: add AuthServiceApplication">
+      <option name="closed" value="true" />
+      <created>1747750802372</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750802372</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: add DiscoveryServer">
+      <option name="closed" value="true" />
+      <created>1747750817223</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750817223</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: add application.yml">
+      <option name="closed" value="true" />
+      <created>1747750856771</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750856771</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat: add RegisterRequest">
+      <option name="closed" value="true" />
+      <created>1747750871025</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750871025</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat: add springSecurityWebFilterChain used Spring Webflux">
+      <option name="closed" value="true" />
+      <created>1747750894695</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750894695</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat: add testController for auth-service">
+      <option name="closed" value="true" />
+      <created>1747750908358</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750908358</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat: add WebclientConfig">
+      <option name="closed" value="true" />
+      <created>1747750921961</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1747750921961</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add pom.xml" />
+    <MESSAGE value="feat: add keycloackService" />
+    <MESSAGE value="feat: add LoginRequest" />
+    <MESSAGE value="feat: add LoginResponse" />
+    <MESSAGE value="feat: add init ApiGatewayApplication" />
+    <MESSAGE value="feat: add AuthSecurityConfig used Spring webflux" />
+    <MESSAGE value="feat: add AuthServiceApplication" />
+    <MESSAGE value="feat: add DiscoveryServer" />
+    <MESSAGE value="feat: add application.yml" />
+    <MESSAGE value="feat: add RegisterRequest" />
+    <MESSAGE value="feat: add springSecurityWebFilterChain used Spring Webflux" />
+    <MESSAGE value="feat: add testController for auth-service" />
+    <MESSAGE value="feat: add WebclientConfig" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add WebclientConfig" />
+  </component>
+</project>
