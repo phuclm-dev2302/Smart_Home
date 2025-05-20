@@ -1,0 +1,43 @@
+server:
+  port: 8081
+
+keycloak:
+  admin:
+    username: admin
+    password: admin
+    client-id: admin-cli
+    realm: master
+    token-uri: http://localhost:8181/realms/master/protocol/openid-connect/token
+    base-url: http://localhost:8181
+
+spring:
+  application:
+    name: auth-service
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: spring-cloud-client
+            client-secret: 0WqV1R00TZcY5ez5MZXrnlqaOz3aIf3w
+            authorization-grant-type: password
+            scope: openid
+        provider:
+          keycloak:
+            token-uri: http://localhost:8181/realms/spring-boot-microservices-realm/protocol/openid-connect/token
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.example.authservice.controller: INFO
+    org.springframework.security: INFO
+    org.springframework.web.reactive.function.client.ExchangeFunctions: INFO
+    reactor.netty.http.client: INFO
+    reactor.netty: INFO
