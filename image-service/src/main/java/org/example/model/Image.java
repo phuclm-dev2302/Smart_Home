@@ -1,4 +1,4 @@
-package org.example.postservice.model;
+package org.example.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
