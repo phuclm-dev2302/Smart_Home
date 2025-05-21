@@ -20,14 +20,19 @@
         <module>discovery-server</module>
         <module>api-gateway</module>
         <module>auth-service</module>
+        <module>post-service</module>
+        <module>amenity-service</module>
+        <module>image-service</module>
     </modules>
 
 
     <properties>
         <java.version>17</java.version>
+        <spring-cloud.version>2024.0.1</spring-cloud.version>
         <json.version>20230227</json.version>
         <jjwt.version>0.9.1</jjwt.version>
-        <spring-cloud.version>2024.0.1</spring-cloud.version>
+        <micrometer-tracing.version>1.2.0</micrometer-tracing.version>
+        <micrometer-observation.version>1.12.0</micrometer-observation.version>
     </properties>
 
     <dependencyManagement>
