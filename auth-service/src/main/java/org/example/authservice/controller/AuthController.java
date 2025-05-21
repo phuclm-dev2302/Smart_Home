@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class TestController {
+public class AuthController {
 
     private final KeycloakTokenService keycloakTokenService;
 
