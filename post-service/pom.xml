@@ -12,14 +12,10 @@
     <artifactId>post-service</artifactId>
 
     <dependencies>
+        <!--Kafka -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
         <!--Spring Security OAuth2 for keycloak -->
         <dependency>
@@ -55,9 +51,16 @@
         </dependency>
         <!-- Micrometer Tracing with Zipkin -->
         <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-tracing-bridge-brave</artifactId>
+    </dependency>
+        <dependency>
             <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-brave</artifactId>
-            <version>${micrometer-tracing.version}</version>
+            <artifactId>micrometer-observation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
@@ -65,15 +68,13 @@
             <version>2.16.4</version>
         </dependency>
         <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-observation</artifactId>
-            <version>${micrometer-observation.version}</version>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-reporter</artifactId>
+            <version>2.16.4</version>
         </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <version>1.12.0</version>
-        </dependency>
+
+
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>

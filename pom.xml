@@ -31,7 +31,7 @@
         <spring-cloud.version>2024.0.1</spring-cloud.version>
         <json.version>20230227</json.version>
         <jjwt.version>0.9.1</jjwt.version>
-        <micrometer-tracing.version>1.2.0</micrometer-tracing.version>
+        <micrometer-tracing.version>1.2.3</micrometer-tracing.version>
         <micrometer-observation.version>1.12.0</micrometer-observation.version>
     </properties>
 
@@ -44,8 +44,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-tracing-bom</artifactId>
+                <version>1.2.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
+
 
 
     <build>
