@@ -20,12 +20,6 @@ public class PostDetail {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private UUID postId;
-
-    @Column(nullable = false)
-    private UUID amenityId;
-
     private BigDecimal price;
     private BigDecimal area;
     private String length;
