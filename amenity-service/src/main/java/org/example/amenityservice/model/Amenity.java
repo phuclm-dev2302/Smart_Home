@@ -1,4 +1,4 @@
-package org.example.postservice.model;
+package org.example.amenityservice.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Table(name = "amenitíe")
+@Table(name = "amenitíes")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
