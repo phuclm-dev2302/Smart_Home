@@ -1,7 +1,7 @@
 version: '3.8'
 
-# Keycloak
 services:
+  # Keycloak
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.2
     container_name: keycloak
@@ -14,7 +14,7 @@ services:
     networks:
       - backend
 
-# Zipkin
+  # Zipkin
   zipkin:
     image: openzipkin/zipkin:latest
     container_name: zipkin
@@ -23,6 +23,42 @@ services:
     networks:
       - backend
 
+  # PostgreSQL for amenity-service
+  amenity-service-db:
+    image: postgres:latest
+    container_name: amenity-service
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: amenity-service
+    ports:
+      - "5001:5432"
+    volumes:
+      - amenity_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # PostgreSQL for post-service
+  post-service-db:
+    image: postgres:latest
+    container_name: post-service
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: post-db
+    ports:
+      - "5000:5432"
+    volumes:
+      - post_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
+
 networks:
   backend:
     driver: bridge
+
+volumes:
+  amenity_data:
+  post_data:
