@@ -17,10 +17,21 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
+        # Authentication-service route
         - id: auth-service
           uri: lb://auth-service
           predicates:
             - Path=/api/v1/auth/**
+        # Post-service route
+        - id: post-service
+          uri: lb://post-service
+          predicates:
+            - Path=/api/v1/posts/**
+        # Amenity-service route
+        - id: amenity-service
+          uri: lb://amenity-service
+          predicates:
+            - Path=/api/v1/amenities
 
 # Micrometer Tracing + Zipkin
 management:
