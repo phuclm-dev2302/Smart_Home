@@ -1,7 +1,11 @@
 spring:
   application:
     name: post-service
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm
 server:
   port: 8082
 
