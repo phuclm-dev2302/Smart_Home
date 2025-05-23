@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,6 +34,8 @@ public class PostServiceImpl implements PostService {
     private PostDetailRepository postDetailRepository;
     @Autowired
     private WebClient.Builder webClientBuilder;
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
 
     @Override
