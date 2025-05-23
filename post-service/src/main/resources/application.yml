@@ -1,11 +1,17 @@
 spring:
   application:
     name: post-service
+  # Resource Server
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm
+  # Kafka
+  kafka:
+    bootstrap-servers: localhost:29092
+
+
 server:
   port: 8082
 
