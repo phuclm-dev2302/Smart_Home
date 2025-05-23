@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.example.postservice.enums.PostTypeEnums;
 import org.example.postservice.enums.StatusEnums;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -18,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Data
-public class PostEntity {
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -42,7 +41,5 @@ public class PostEntity {
     private StatusEnums status;
     private LocalDate createAt;
     private LocalDate updatedAt;
-
-
 
 }
