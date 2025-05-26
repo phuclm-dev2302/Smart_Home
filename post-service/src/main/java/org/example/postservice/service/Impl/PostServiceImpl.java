@@ -37,7 +37,6 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-
     @Override
     public Mono<String> getUserIdFromToken() {
         return ReactiveSecurityContextHolder.getContext()
