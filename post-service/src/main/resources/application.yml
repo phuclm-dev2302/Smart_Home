@@ -1,6 +1,17 @@
 spring:
   application:
     name: post-service
+  datasource:
+    url: jdbc:postgresql://localhost:5000/post-service
+    username: postgres
+    password: lam1782004
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   # Resource Server
   security:
     oauth2:

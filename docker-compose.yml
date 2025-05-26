@@ -51,7 +51,7 @@ services:
     container_name: amenity-service
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_PASSWORD: lam1782004
       POSTGRES_DB: amenity-service
     ports:
       - "5001:5432"
@@ -67,8 +67,8 @@ services:
     container_name: post-service
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: post-db
+      POSTGRES_PASSWORD: lam1782004
+      POSTGRES_DB: post-service
     ports:
       - "5000:5432"
     volumes:
