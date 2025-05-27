@@ -12,6 +12,11 @@
     <artifactId>post-service</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>common-event</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--Kafka -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
@@ -51,9 +56,9 @@
         </dependency>
         <!-- Micrometer Tracing with Zipkin -->
         <dependency>
-        <groupId>io.micrometer</groupId>
-        <artifactId>micrometer-tracing-bridge-brave</artifactId>
-    </dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-observation</artifactId>
@@ -103,13 +108,22 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
 </project>
