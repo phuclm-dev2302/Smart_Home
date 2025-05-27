@@ -23,6 +23,8 @@
         <module>post-service</module>
         <module>amenity-service</module>
         <module>image-service</module>
+        <module>notification-service</module>
+        <module>common-event</module>
     </modules>
 
 
@@ -54,16 +56,21 @@
         </dependencies>
 
     </dependencyManagement>
-
-
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
 </project>
