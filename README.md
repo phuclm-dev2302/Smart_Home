@@ -1,4 +1,4 @@
-🏠 Giới thiệu về SmartNest
+🏠 Giới thiệu về SmartNest 
 SmartNest là nền tảng thông minh kết nối giữa người đăng cho thuê/bán (nhà ở, trọ, chung cư...) và người tìm thuê/mua, mang đến trải nghiệm tìm kiếm chỗ ở tiện lợi, hiệu quả và hiện đại.
 
 Ứng dụng khai thác sức mạnh của trí tuệ nhân tạo (AI) kết hợp với Elasticsearch để hỗ trợ người dùng:
@@ -11,8 +11,7 @@ SmartNest là nền tảng thông minh kết nối giữa người đăng cho th
 
 💡 Gợi ý chỗ ở phù hợp với ngân sách, diện tích, tiện ích và xu hướng thị trường.
 
-⚙️ Kiến trúc hệ thống
-SmartNest được xây dựng trên nền kiến trúc microservice hiện đại, giúp hệ thống dễ dàng:
+⚙️ Kiến trúc hệ thống SmartNest được xây dựng trên nền kiến trúc microservice hiện đại, giúp hệ thống dễ dàng:
 
 🧩 Tách biệt chức năng theo từng domain như người dùng, bài đăng, tiện ích, thanh toán, gợi ý AI...
 
@@ -22,5 +21,4 @@ SmartNest được xây dựng trên nền kiến trúc microservice hiện đ�
 
 🛡️ Tăng tính ổn định và bảo trì dễ dàng, khi mỗi service có thể được giám sát, log và deploy riêng biệt.
 
-✨ Trải nghiệm người dùng vượt trội
-Nhờ khả năng xử lý dữ liệu thông minh và kiến trúc microservice linh hoạt, SmartNest không chỉ giúp rút ngắn thời gian tìm kiếm, mà còn mang đến độ chính xác và trải nghiệm cá nhân hóa vượt trội cho cả người cho thuê và người thuê.
+✨ Trải nghiệm người dùng vượt trội Nhờ khả năng xử lý dữ liệu thông minh và kiến trúc microservice linh hoạt, SmartNest không chỉ giúp rút ngắn thời gian tìm kiếm, mà còn mang đến độ chính xác và trải nghiệm cá nhân hóa vượt trội cho cả người cho thuê và người thuê.
