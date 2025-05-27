@@ -28,7 +28,7 @@ services:
     image: quay.io/keycloak/keycloak:24.0.2
     container_name: keycloak
     ports:
-      - "8181:8181"
+      - "8181:8080"
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -44,6 +44,21 @@ services:
       - "9411:9411"
     networks:
       - backend
+  # PostgreSQL for notification-service
+  notification-service-db:
+    image: postgres:latest
+    container_name: notification-service-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: notification-service
+    ports:
+      - "5004:5432"
+    volumes:
+      - notification_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
 
   # PostgreSQL for amenity-service
   amenity-service-db:
@@ -84,3 +99,4 @@ networks:
 volumes:
   amenity_data:
   post_data:
+  notification_data:
