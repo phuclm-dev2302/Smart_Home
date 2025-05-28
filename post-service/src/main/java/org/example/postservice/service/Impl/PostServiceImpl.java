@@ -1,7 +1,7 @@
 package org.example.postservice.service.Impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.postservice.config.WebClientConfig;
+import org.example.commonevent.common.event.CreatePostEvent;
 import org.example.postservice.dto.request.CreateAmenityListRequest;
 import org.example.postservice.dto.request.CreateAmenityRequest;
 import org.example.postservice.dto.request.PostRequest;
@@ -21,6 +21,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import org.springframework.kafka.core.KafkaTemplate;
 
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -35,7 +36,7 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private WebClient.Builder webClientBuilder;
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, CreatePostEvent> kafkaTemplate;
 
     @Override
     public Mono<String> getUserIdFromToken() {
@@ -100,7 +101,8 @@ public class PostServiceImpl implements PostService {
                     .build();
 
             postRepository.save(post);
-
+            kafkaTemplate.send("notificationTopic", new CreatePostEvent(post.getId(),post.getUserId()));
+            log.info("da tao topic");
             // 4. Gộp lại thành PostResponse
             return amenityMono.map(amenityList -> PostResponse.toDto(post, postDetail, amenityList));
         });
