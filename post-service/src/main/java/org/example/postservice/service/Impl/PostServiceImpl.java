@@ -15,6 +15,8 @@ import org.example.postservice.repository.PostDetailRepository;
 import org.example.postservice.repository.PostRepository;
 import org.example.postservice.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -84,7 +88,6 @@ public class PostServiceImpl implements PostService {
                         .retrieve() // gửi request và lấy response
                         .bodyToFlux(AmenityResponse.class).collectList();
             }
-
             // 3. Tạo Post
             Post post = Post.builder()
                     .postDetailId(postDetail.getId())
@@ -128,4 +131,36 @@ public class PostServiceImpl implements PostService {
 
         return amenityMono.map(amenities -> PostResponse.toDto(post, postDetail, amenities));
     }
+
+    @Override
+    public Mono<List<PostResponse>> getAllPost(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Post> posts = postRepository.findAll(pageable).getContent();
+
+        List<Mono<PostResponse>> responseMonos = posts.stream()
+                .map(post -> {
+                    PostDetail postDetail = postDetailRepository.findById(post.getPostDetailId())
+                            .orElseThrow(() -> new RuntimeException("PostDetail not found for postId: " + post.getId()));
+
+                    Mono<List<AmenityResponse>> amenityMono = webClientBuilder.build()
+                            .get()
+                            .uri("http://amenity-service/api/v1/amenities/post-detail/{id}", postDetail.getId())
+                            .retrieve()
+                            .bodyToFlux(AmenityResponse.class)
+                            .collectList()
+                            .onErrorReturn(List.of());
+
+                    return amenityMono.map(amenities -> PostResponse.toDto(post, postDetail, amenities));
+                })
+                .toList();
+
+        return Mono.zip(responseMonos, results ->
+                Arrays.stream(results)
+                        .map(obj -> (PostResponse) obj)
+                        .toList()
+        );
+    }
+
+
+
 }
