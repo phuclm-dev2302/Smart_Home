@@ -1,12 +1,18 @@
 package org.example.postservice.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.postservice.model.PostDetail;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PostDetailResponse {
     private BigDecimal price;
     private BigDecimal area;
