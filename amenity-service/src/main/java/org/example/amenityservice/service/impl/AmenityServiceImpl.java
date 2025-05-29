@@ -17,7 +17,6 @@ public class AmenityServiceImpl implements AmenityService {
     @Autowired
     private AmenityRepository amenityRepository;
 
-
     @Override
     public List<Amenity> createAmenities(CreateAmenityListRequest request) {
         List<Amenity> amenities = request.getAmenities().stream()
@@ -30,4 +29,10 @@ public class AmenityServiceImpl implements AmenityService {
 
         return amenityRepository.saveAll(amenities);
     }
+
+    @Override
+    public List<Amenity> getByPostDetailId(UUID id) {
+        return amenityRepository.findAllByPostDetailId(id);
+    }
+
 }
