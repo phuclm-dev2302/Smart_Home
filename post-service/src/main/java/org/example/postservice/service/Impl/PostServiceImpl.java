@@ -6,6 +6,7 @@ import org.example.postservice.dto.request.CreateAmenityListRequest;
 import org.example.postservice.dto.request.CreateAmenityRequest;
 import org.example.postservice.dto.request.PostRequest;
 import org.example.postservice.dto.response.AmenityResponse;
+import org.example.postservice.dto.response.PostDetailResponse;
 import org.example.postservice.dto.response.PostResponse;
 import org.example.postservice.enums.StatusEnums;
 import org.example.postservice.model.Post;
@@ -22,6 +23,7 @@ import reactor.core.publisher.Mono;
 import org.springframework.kafka.core.KafkaTemplate;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -108,5 +110,22 @@ public class PostServiceImpl implements PostService {
         });
     }
 
+    @Override
+    public Mono<PostResponse> getPostById(UUID id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
 
+        PostDetail postDetail = postDetailRepository.findById(post.getPostDetailId())
+                .orElseThrow(() -> new RuntimeException("PostDetail not found for postId: " + id));
+
+        Mono<List<AmenityResponse>> amenityMono = webClientBuilder.build()
+                .get()
+                .uri("http://amenity-service/api/v1/amenities/post-detail/{id}", postDetail.getId())
+                .retrieve()
+                .bodyToFlux(AmenityResponse.class)
+                .collectList()
+                .onErrorReturn(List.of()); // fallback nếu gọi amenity-service lỗi
+
+        return amenityMono.map(amenities -> PostResponse.toDto(post, postDetail, amenities));
+    }
 }
