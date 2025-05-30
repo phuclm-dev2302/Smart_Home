@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: search-service
+server:
+  port: 8086
+
+elasticsearch:
+  host: localhost
