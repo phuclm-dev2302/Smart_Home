@@ -25,6 +25,7 @@
         <module>image-service</module>
         <module>notification-service</module>
         <module>common-event</module>
+        <module>ai-service</module>
     </modules>
 
 
