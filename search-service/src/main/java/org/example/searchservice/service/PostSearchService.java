@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-
 public class PostSearchService {
 
     private final ElasticsearchClient esClient;
@@ -52,11 +51,12 @@ public class PostSearchService {
             mustQueries.add(matchQuery("district", request.getDistrict()));
         }
         if (request.getBedRoom() != null) {
-            mustQueries.add(matchQuery("bedRoom", request.getBedRoom()));
+            mustQueries.add(matchQuery("bedRoom", request.getBedRoom())); // Integer
         }
         if (request.getBathRoom() != null) {
-            mustQueries.add(matchQuery("bathRoom", request.getBathRoom()));
+            mustQueries.add(matchQuery("bathRoom", request.getBathRoom())); // Integer
         }
+
         // SHOULD: Các trường tùy chọn
         if (request.getTitle() != null) {
             shouldQueries.add(matchQuery("title", request.getTitle()));
@@ -67,19 +67,17 @@ public class PostSearchService {
         if (request.getPostType() != null) {
             shouldQueries.add(matchQuery("postType", request.getPostType()));
         }
-        // Script: Lọc theo minPrice
+
+        // Script filter (vì không dùng được rangeQuery)
         if (request.getMinPrice() != null) {
             mustQueries.add(scriptQuery("price", ">=", request.getMinPrice()));
         }
-        // Script: Lọc theo maxPrice
         if (request.getMaxPrice() != null) {
             mustQueries.add(scriptQuery("price", "<=", request.getMaxPrice()));
         }
-        // Script: Lọc theo minArea
         if (request.getMinArea() != null) {
             mustQueries.add(scriptQuery("area", ">=", request.getMinArea()));
         }
-        // Script: Lọc theo maxArea
         if (request.getMaxArea() != null) {
             mustQueries.add(scriptQuery("area", "<=", request.getMaxArea()));
         }
@@ -95,7 +93,15 @@ public class PostSearchService {
         return Query.of(q -> q.match(m -> m.field(field).query(value)));
     }
 
-    private Query scriptQuery(String field, String operator, String value) {
+    private Query matchQuery(String field, Integer value) {
+        return Query.of(q -> q.match(m -> m.field(field).query(value)));
+    }
+
+    private Query matchQuery(String field, Double value) {
+        return Query.of(q -> q.match(m -> m.field(field).query(value)));
+    }
+
+    private Query scriptQuery(String field, String operator, Object value) {
         String scriptSource = String.format("doc['%s'].value %s params.value", field, operator);
         return Query.of(q -> q.script(s -> s
                 .script(script -> script
