@@ -7,10 +7,10 @@ server:
 gemini:
   api-key: AIzaSyBBR_z6JLBSm49LV5S1P7HR0JyvcJZD8Mo
 
-#logging:
-#  level:
-#    root: INFO
-#    org.springframework.web: DEBUG
-#    org.example.aiservice: DEBUG
-#    okhttp3: DEBUG
-#    okhttp3.internal.http: DEBUG
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.example.aiservice: DEBUG
+    okhttp3: DEBUG
+    okhttp3.internal.http: DEBUG
