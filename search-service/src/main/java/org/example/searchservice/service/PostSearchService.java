@@ -6,19 +6,38 @@ import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.json.JsonData;
+import lombok.extern.slf4j.Slf4j;
+import org.example.commonevent.common.event.CreatePostDocumentEvent;
 import org.example.searchservice.dto.PostSearchRequest;
 import org.example.searchservice.dto.PostDocument;
+import org.example.searchservice.dto.PostResponse;
+import org.example.searchservice.dto.AmenityResponse;
+import org.example.searchservice.repository.PostElasticsearchRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PostSearchService {
 
     private final ElasticsearchClient esClient;
+    @Autowired
+    private WebClient.Builder webClientBuilder;
+    @Autowired
+    private PostElasticsearchRepository postElasticsearchRepository;
 
     public PostSearchService(ElasticsearchClient esClient) {
         this.esClient = esClient;
@@ -110,5 +129,47 @@ public class PostSearchService {
                         .params("value", JsonData.of(value))
                 )
         ));
+    }
+
+    @KafkaListener(topics = "searchTopic", groupId = "searchGroup")
+    public void handleCreatePostDocumentEvent(CreatePostDocumentEvent event) {
+        log.info("Received post document event: id = {}", event.getId());
+
+        PostResponse postResponse = webClientBuilder.build()
+                .get()
+                .uri("http://post-service/api/v1/posts/" + event.getId())
+                .headers(headers -> headers.setBearerAuth(event.getToken()))
+                .retrieve()
+                .bodyToMono(PostResponse.class)
+                .block();
+
+        if (postResponse == null) {
+            log.error("PostResponse is null for id {}", event.getId());
+            return;
+        }
+        PostDocument postDocument = PostDocument.builder()
+                .id(postResponse.getId().toString())
+                .title(postResponse.getTitle())
+                .description(postResponse.getDescription())
+                .city(postResponse.getCity())
+                .district(postResponse.getDistrict())
+                .address(postResponse.getAddress())
+                .ward(postResponse.getWard())
+                .price(postResponse.getPostDetail().getPrice())
+                .area(postResponse.getPostDetail().getArea())
+                .bedRoom(postResponse.getPostDetail().getBedRoom())
+                .bathRoom(postResponse.getPostDetail().getBathRoom())
+                .floor(postResponse.getPostDetail().getFloor())
+                .legalPapers(postResponse.getPostDetail().getLegalPapers())
+                .amenities(postResponse.getPostDetail().getAmenities().stream().map(a -> a.getName()).toList() )
+                .postType(postResponse.getPostType())
+                .status(postResponse.getStatus())
+                .createAt(postResponse.getCreateAt())
+                .build();
+
+        postElasticsearchRepository.save(postDocument);
+
+        log.info("PostDocument saved to Elasticsearch with id {}", postDocument.getId());
+
     }
 }
