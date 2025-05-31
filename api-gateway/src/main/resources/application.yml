@@ -32,6 +32,18 @@ spring:
           uri: lb://amenity-service
           predicates:
             - Path=/api/v1/amenities
+        # Ai-service route
+        - id: ai-service
+          uri: lb:/ai-service
+          predicates:
+            - Path=/api/v1/ai-service
+        # Search-service route
+        - id: search-service
+          uri: lb:/search-service
+          predicates:
+            - Path=/api/v1/search-service
+
+
 
 # Micrometer Tracing + Zipkin
 management:
