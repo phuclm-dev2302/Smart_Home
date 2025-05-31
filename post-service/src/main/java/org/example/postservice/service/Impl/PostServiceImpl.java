@@ -1,6 +1,7 @@
 package org.example.postservice.service.Impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.commonevent.common.event.CreatePostDocumentEvent;
 import org.example.commonevent.common.event.CreatePostEvent;
 import org.example.postservice.dto.request.CreateAmenityListRequest;
 import org.example.postservice.dto.request.CreateAmenityRequest;
@@ -18,7 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -43,6 +47,8 @@ public class PostServiceImpl implements PostService {
     private WebClient.Builder webClientBuilder;
     @Autowired
     private KafkaTemplate<String, CreatePostEvent> kafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, CreatePostDocumentEvent> postDocumentKafkaTemplate;
 
     @Override
     public Mono<String> getUserIdFromToken() {
@@ -54,64 +60,85 @@ public class PostServiceImpl implements PostService {
                 .onErrorMap(e -> new RuntimeException("Failed to get userId: " + e.getMessage()));
     }
 
+    public Mono<String> getTokenFromSecurityContext() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext -> {
+                    JwtAuthenticationToken authentication = (JwtAuthenticationToken) securityContext.getAuthentication();
+                    return authentication.getToken().getTokenValue();
+                });
+    }
+
     @Override
     public Mono<PostResponse> createPost(PostRequest request) {
         log.info("Received PostRequest: {}", request);
-        return getUserIdFromToken().flatMap(userId -> {
-            // 1. Lưu PostDetail
-            PostDetail postDetail = PostDetail.builder()
-                    .price(request.getPostDetailRequest().getPrice())
-                    .area(request.getPostDetailRequest().getArea())
-                    .length(request.getPostDetailRequest().getLength())
-                    .horizontal(request.getPostDetailRequest().getHorizontal())
-                    .bedRoom(request.getPostDetailRequest().getBedRoom())
-                    .bathRoom(request.getPostDetailRequest().getBathRoom())
-                    .floor(request.getPostDetailRequest().getFloor())
-                    .legalPapers(request.getPostDetailRequest().isLegalPapers())
-                    .build();
-            postDetailRepository.save(postDetail);
 
-            // 2. Gửi request tạo amenity
-            List<CreateAmenityRequest> amenities = request.getPostDetailRequest().getAmenities();
-            Mono<List<AmenityResponse>> amenityMono = Mono.just(List.of());
+        return getUserIdFromToken().zipWith(getTokenFromSecurityContext())
+                .flatMap(tuple -> {
+                    String userId = tuple.getT1();
+                    String token = tuple.getT2();
 
-            if (amenities != null && !amenities.isEmpty()) {
-                CreateAmenityListRequest amenityListRequest = CreateAmenityListRequest.builder()
-                        .postDetailId(postDetail.getId())
-                        .amenities(amenities)
-                        .build();
+                    // 1. Lưu PostDetail
+                    PostDetail postDetail = PostDetail.builder()
+                            .price(request.getPostDetailRequest().getPrice())
+                            .area(request.getPostDetailRequest().getArea())
+                            .length(request.getPostDetailRequest().getLength())
+                            .horizontal(request.getPostDetailRequest().getHorizontal())
+                            .bedRoom(request.getPostDetailRequest().getBedRoom())
+                            .bathRoom(request.getPostDetailRequest().getBathRoom())
+                            .floor(request.getPostDetailRequest().getFloor())
+                            .legalPapers(request.getPostDetailRequest().isLegalPapers())
+                            .build();
+                    postDetailRepository.save(postDetail);
 
-                amenityMono = webClientBuilder.build()
-                        .post()
-                        .uri("http://amenity-service/api/v1/amenities")
-                        .bodyValue(amenityListRequest)
-                        .retrieve() // gửi request và lấy response
-                        .bodyToFlux(AmenityResponse.class).collectList();
-            }
-            // 3. Tạo Post
-            Post post = Post.builder()
-                    .postDetailId(postDetail.getId())
-                    .userId(UUID.fromString(userId))
-                    .imageId(request.getImageId())
-                    .title(request.getTitle())
-                    .description(request.getDescription())
-                    .address(request.getAddress())
-                    .city(request.getCity())
-                    .district(request.getDistrict())
-                    .ward(request.getWard())
-                    .postType(request.getPostType())
-                    .status(StatusEnums.EMPTY)
-                    .createAt(LocalDate.now())
-                    .updatedAt(LocalDate.now())
-                    .build();
+                    // 2. Gửi request tạo amenity
+                    List<CreateAmenityRequest> amenities = request.getPostDetailRequest().getAmenities();
+                    Mono<List<AmenityResponse>> amenityMono = Mono.just(List.of());
 
-            postRepository.save(post);
-            kafkaTemplate.send("notificationTopic", new CreatePostEvent(post.getId(),post.getUserId()));
-            log.info("da tao topic");
-            // 4. Gộp lại thành PostResponse
-            return amenityMono.map(amenityList -> PostResponse.toDto(post, postDetail, amenityList));
-        });
+                    if (amenities != null && !amenities.isEmpty()) {
+                        CreateAmenityListRequest amenityListRequest = CreateAmenityListRequest.builder()
+                                .postDetailId(postDetail.getId())
+                                .amenities(amenities)
+                                .build();
+
+                        amenityMono = webClientBuilder.build()
+                                .post()
+                                .uri("http://amenity-service/api/v1/amenities")
+                                .headers(headers -> headers.setBearerAuth(token))
+                                .bodyValue(amenityListRequest)
+                                .retrieve()
+                                .bodyToFlux(AmenityResponse.class)
+                                .collectList();
+                    }
+
+                    // 3. Tạo Post
+                    Post post = Post.builder()
+                            .postDetailId(postDetail.getId())
+                            .userId(UUID.fromString(userId))
+                            .imageId(request.getImageId())
+                            .title(request.getTitle())
+                            .description(request.getDescription())
+                            .address(request.getAddress())
+                            .city(request.getCity())
+                            .district(request.getDistrict())
+                            .ward(request.getWard())
+                            .postType(request.getPostType())
+                            .status(StatusEnums.EMPTY)
+                            .createAt(LocalDate.now())
+                            .updatedAt(LocalDate.now())
+                            .build();
+
+                    postRepository.save(post);
+
+                    // Gửi Kafka
+                    kafkaTemplate.send("notificationTopic", new CreatePostEvent(post.getId(), post.getUserId()));
+                    postDocumentKafkaTemplate.send("searchTopic", new CreatePostDocumentEvent(post.getId(), token));
+                    log.info("Đã tạo topic");
+
+                    // 4. Gộp lại thành PostResponse
+                    return amenityMono.map(amenityList -> PostResponse.toDto(post, postDetail, amenityList));
+                });
     }
+
 
     @Override
     public Mono<PostResponse> getPostById(UUID id) {

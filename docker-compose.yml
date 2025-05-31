@@ -60,6 +60,22 @@ services:
       - backend
     restart: unless-stopped
 
+  # PostgreSQL for search-service
+  search-service-db:
+    image: postgres:latest
+    container_name: search-service-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: search-service
+    ports:
+      - "5005:5432"
+    volumes:
+      - search_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
+
   # PostgreSQL for amenity-service
   amenity-service-db:
     image: postgres:latest
@@ -99,4 +115,5 @@ networks:
 volumes:
   amenity_data:
   post_data:
+  search_data:
   notification_data:
