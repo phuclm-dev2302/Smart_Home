@@ -1,18 +1,24 @@
 package org.example.searchservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(indexName = "post")
+@Document(indexName = "post-index")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PostDocument {
     private String id;
 
@@ -26,15 +32,15 @@ public class PostDocument {
     private String district;
     private String ward;
 
-    // 📊 Chi tiết
-    private String price;
-    private String area;
+    // 📊 Chi tiết - SỬA KIỂU DỮ LIỆU CHO ĐÚNG MAPPING
+    private Double price;        // double thay vì String
+    private Double area;         // double thay vì String
 
-    private String bedRoom;
-    private String bathRoom;
-    private String floor;
+    private Integer bedRoom;     // integer thay vì String
+    private Integer bathRoom;    // integer thay vì String
+    private Integer floor;       // integer thay vì String
 
-    private String legalPapers; // true/false dạng string
+    private Boolean legalPapers; // boolean thay vì String
 
     // 🧰 Tiện ích
     private List<String> amenities;
@@ -44,5 +50,5 @@ public class PostDocument {
     private String status;
 
     // 🕒 Thời gian
-    private String createAt;
+    private String createAt;  // LocalDate cho date mapping
 }
