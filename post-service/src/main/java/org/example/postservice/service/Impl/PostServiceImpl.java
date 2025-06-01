@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -131,9 +132,30 @@ public class PostServiceImpl implements PostService {
 
                     // Gửi Kafka
                     kafkaTemplate.send("notificationTopic", new CreatePostEvent(post.getId(), post.getUserId()));
-                    postDocumentKafkaTemplate.send("searchTopic", new CreatePostDocumentEvent(post.getId(), token));
-                    log.info("Đã tạo topic");
+                    postDocumentKafkaTemplate.send("searchTopic", CreatePostDocumentEvent.builder()
+                            .id(post.getId())
+                            .token(token)
+                            .title(post.getTitle())
+                            .description(post.getDescription())
+                            .city(post.getCity())
+                            .district(post.getDistrict())
+                            .address(post.getAddress())
+                            .ward(post.getWard())
+                            .price(postDetail.getPrice().toString())
+                            .area(postDetail.getArea().toString())
+                            .bedRoom(Integer.toString(postDetail.getBedRoom()))
+                            .bathRoom(Integer.toString(postDetail.getBathRoom()))
+                            .floor(Integer.toString(postDetail.getFloor()))
+                            .legalPapers(Boolean.toString(postDetail.isLegalPapers()))
+                            .postType(post.getPostType().toString())
+                            .status(post.getStatus().toString())
+                            .createAt(post.getCreateAt().toString())
+                            .amenities(amenities != null ? amenities.stream()
+                                            .map(CreateAmenityRequest::getName)
+                                            .collect(Collectors.toList()) : List.of())
+                            .build());
 
+                    log.info("Đã tạo topic");
                     // 4. Gộp lại thành PostResponse
                     return amenityMono.map(amenityList -> PostResponse.toDto(post, postDetail, amenityList));
                 });
