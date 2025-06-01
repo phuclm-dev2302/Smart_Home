@@ -23,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ public class PostSearchService {
         Query finalQuery = buildQuery(request);
 
         SearchRequest searchRequest = SearchRequest.of(s -> s
-                .index("posts")
+                .index("post-index")
                 .query(finalQuery)
         );
 
@@ -135,41 +136,37 @@ public class PostSearchService {
     public void handleCreatePostDocumentEvent(CreatePostDocumentEvent event) {
         log.info("Received post document event: id = {}", event.getId());
 
-        PostResponse postResponse = webClientBuilder.build()
-                .get()
-                .uri("http://post-service/api/v1/posts/" + event.getId())
-                .headers(headers -> headers.setBearerAuth(event.getToken()))
-                .retrieve()
-                .bodyToMono(PostResponse.class)
-                .block();
+        try {
+            PostDocument postDocument = PostDocument.builder()
+                    .id(event.getId().toString())
+                    .title(event.getTitle())
+                    .description(event.getDescription())
+                    .city(event.getCity())
+                    .district(event.getDistrict())
+                    .address(event.getAddress())
+                    .ward(event.getWard())
 
-        if (postResponse == null) {
-            log.error("PostResponse is null for id {}", event.getId());
-            return;
+                    // Convert String to proper types
+                    .price(event.getPrice() != null ? Double.parseDouble(event.getPrice()) : null)
+                    .area(event.getArea() != null ? Double.parseDouble(event.getArea()) : null)
+                    .bedRoom(event.getBedRoom() != null ? Integer.parseInt(event.getBedRoom()) : null)
+                    .bathRoom(event.getBathRoom() != null ? Integer.parseInt(event.getBathRoom()) : null)
+                    .floor(event.getFloor() != null ? Integer.parseInt(event.getFloor()) : null)
+                    .legalPapers(event.getLegalPapers() != null ? Boolean.parseBoolean(event.getLegalPapers()) : null)
+
+                    .amenities(event.getAmenities())
+                    .postType(event.getPostType())
+                    .status(event.getStatus())
+                    .createAt(event.getCreateAt())
+                    .build();
+
+            postElasticsearchRepository.save(postDocument);
+            log.info("PostDocument saved to Elasticsearch with id {}", postDocument.getId());
+
+        } catch (NumberFormatException e) {
+            log.error("Error converting string to number for post {}", event.getId(), e);
+        } catch (Exception e) {
+            log.error("Error saving post document {}", event.getId(), e);
         }
-        PostDocument postDocument = PostDocument.builder()
-                .id(postResponse.getId().toString())
-                .title(postResponse.getTitle())
-                .description(postResponse.getDescription())
-                .city(postResponse.getCity())
-                .district(postResponse.getDistrict())
-                .address(postResponse.getAddress())
-                .ward(postResponse.getWard())
-                .price(postResponse.getPostDetail().getPrice())
-                .area(postResponse.getPostDetail().getArea())
-                .bedRoom(postResponse.getPostDetail().getBedRoom())
-                .bathRoom(postResponse.getPostDetail().getBathRoom())
-                .floor(postResponse.getPostDetail().getFloor())
-                .legalPapers(postResponse.getPostDetail().getLegalPapers())
-                .amenities(postResponse.getPostDetail().getAmenities().stream().map(a -> a.getName()).toList() )
-                .postType(postResponse.getPostType())
-                .status(postResponse.getStatus())
-                .createAt(postResponse.getCreateAt())
-                .build();
-
-        postElasticsearchRepository.save(postDocument);
-
-        log.info("PostDocument saved to Elasticsearch with id {}", postDocument.getId());
-
     }
 }
