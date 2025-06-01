@@ -1,15 +1,24 @@
 server:
-  port: 8086
+  port: 8087
 
 elasticsearch:
   host: localhost
 spring:
   application:
     name: search-service
+
+  # Resource Server
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm
+
   datasource:
     url: jdbc:postgresql://localhost:5005/search-service
     username: postgres
     password: 123456
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -17,6 +26,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
   # Resource Server
   kafka:
     bootstrap-servers: localhost:29092
