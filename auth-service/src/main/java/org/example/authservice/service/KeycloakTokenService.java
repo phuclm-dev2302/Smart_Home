@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -109,14 +110,18 @@ public class KeycloakTokenService {
         Map<String, Object> payload = new HashMap<>();
         payload.put("username", req.getUsername());
         payload.put("email", req.getEmail());
+        payload.put("firstName", req.getFirstName());
+        payload.put("lastName", req.getLastName());
         payload.put("enabled", true);
+        payload.put("emailVerified", false);
 
-        Map<String, String> credentials = new HashMap<>();
+
+        Map<String, Object> credentials = new HashMap<>();
         credentials.put("type", "password");
         credentials.put("value", req.getPassword());
-        credentials.put("temporary", "false");
+        credentials.put("temporary", false);
 
-        payload.put("credentials", new Object[]{credentials});
+        payload.put("credentials", List.of(credentials));
         return payload;
     }
 }
