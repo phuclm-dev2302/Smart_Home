@@ -1,6 +1,7 @@
 package org.example.postservice.controller;
 
 import org.example.postservice.dto.request.PostRequest;
+import org.example.postservice.dto.request.UpdatePostRequest;
 import org.example.postservice.dto.response.PostResponse;
 import org.example.postservice.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,11 @@ public class PostController {
             @RequestParam(defaultValue = "10") int size
     ) {
         return postService.getAllPost(page, size);
+    }
+
+    @PutMapping("/{id}")
+    public Mono<PostResponse> updatePost(@PathVariable("id") UUID id, @RequestBody UpdatePostRequest request){
+        return postService.updatePost(id,request );
     }
 
 }
