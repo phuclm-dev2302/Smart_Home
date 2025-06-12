@@ -6,6 +6,7 @@ import org.example.commonevent.common.event.CreatePostEvent;
 import org.example.postservice.dto.request.CreateAmenityListRequest;
 import org.example.postservice.dto.request.CreateAmenityRequest;
 import org.example.postservice.dto.request.PostRequest;
+import org.example.postservice.dto.request.UpdatePostRequest;
 import org.example.postservice.dto.response.AmenityResponse;
 import org.example.postservice.dto.response.PostDetailResponse;
 import org.example.postservice.dto.response.PostResponse;
@@ -209,7 +210,39 @@ public class PostServiceImpl implements PostService {
                         .toList()
         );
     }
+    @Override
+    public Mono<PostResponse> updatePost(UUID id, UpdatePostRequest request){
+        log.info("Update Post with id: ", id);
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("post not found"));
 
+        PostDetail postDetail = postDetailRepository.findById(post.getPostDetailId())
+                .orElseThrow(() -> new IllegalArgumentException("PostDetail not found"));
 
+        postDetail.setPrice(request.getUpdatePostDetailRequest().getPrice());
+        postDetail.setArea(request.getUpdatePostDetailRequest().getArea());
+        postDetail.setLength(request.getUpdatePostDetailRequest().getLength());
+        postDetail.setBathRoom(postDetail.getBathRoom());
+        postDetail.setBedRoom(request.getUpdatePostDetailRequest().getBedRoom());
+        postDetail.setBathRoom(request.getUpdatePostDetailRequest().getBathRoom());
+        postDetail.setFloor(request.getUpdatePostDetailRequest().getFloor());
+        postDetail.setLegalPapers(request.getUpdatePostDetailRequest().isLegalPapers());
+        PostDetail savedPostDetail = postDetailRepository.save(postDetail);
+        log.info("PostDetail has been saved");
+
+        post.setTitle(request.getTitle());
+        post.setDescription(request.getDescription());
+        post.setAddress(request.getAddress());
+        post.setCity(request.getCity());
+        post.setDistrict(request.getDistrict());
+        post.setWard(request.getWard());
+        post.setPostType(request.getPostType());
+        post.setStatus(request.getStatus());
+
+        Post savedPost = postRepository.save(post);
+        log.info("Post has been saved");
+
+        return Mono.just(PostResponse.toDto(savedPost, savedPostDetail, List.of())); // dang de aminities rong
+    }
 
 }
