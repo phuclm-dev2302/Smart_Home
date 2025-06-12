@@ -6,7 +6,7 @@ keycloak:
     username: admin
     password: admin
     client-id: admin-cli
-    realm: master
+    realm: spring-boot-microservices-realm
     token-uri: http://localhost:8181/realms/master/protocol/openid-connect/token
     base-url: http://localhost:8181
 
@@ -19,7 +19,7 @@ spring:
         registration:
           keycloak:
             client-id: spring-cloud-client
-            client-secret: bD7OMYdn38bMXjkcyrXBMJRhTIwzr09e
+            client-secret: Or9L8tSJA0e16x08W6kLVYh3lDtNULN7
             authorization-grant-type: password
             scope: openid
         provider:

@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -73,21 +74,21 @@ public class KeycloakTokenService {
                         .bodyValue(buildUserPayload(request))
                         .exchangeToMono(response -> {
                             if (response.statusCode().is2xxSuccessful()) {
-                                // Lấy header 'Location' để trích xuất userId
                                 String location = response.headers().header("Location").stream().findFirst().orElse(null);
                                 if (location != null && location.contains("/users/")) {
                                     String userId = location.substring(location.lastIndexOf("/") + 1);
-                                    return Mono.just("✅ User created successfully with ID: " + userId);
+                                    // Gửi email xác nhận
+                                    return sendVerificationEmail(token, userId)
+                                            .thenReturn("✅ User created successfully. Verification email sent.");
                                 } else {
-                                    return Mono.error(new RuntimeException("✅ User created but failed to extract user ID"));
+                                    return Mono.error(new RuntimeException("User created but failed to extract ID"));
                                 }
                             } else {
                                 return response.bodyToMono(String.class)
-                                        .flatMap(body -> Mono.error(new RuntimeException("❌ Failed to register user: " + body)));
+                                        .flatMap(body -> Mono.error(new RuntimeException("Failed to register user: " + body)));
                             }
                         }));
     }
-
 
     private Mono<String> getAdminToken() {
         Map<String, String> formData = new HashMap<>();
@@ -109,14 +110,27 @@ public class KeycloakTokenService {
         Map<String, Object> payload = new HashMap<>();
         payload.put("username", req.getUsername());
         payload.put("email", req.getEmail());
+        payload.put("firstName", req.getFirstName());
+        payload.put("lastName", req.getLastName());
         payload.put("enabled", true);
+        payload.put("emailVerified", false);
 
-        Map<String, String> credentials = new HashMap<>();
+        Map<String, Object> credentials = new HashMap<>();
         credentials.put("type", "password");
         credentials.put("value", req.getPassword());
-        credentials.put("temporary", "false");
+        credentials.put("temporary", false);
 
-        payload.put("credentials", new Object[]{credentials});
+        payload.put("credentials", List.of(credentials));
         return payload;
+    }
+
+    // Phương thức gửi email xác nhận
+    private Mono<Void> sendVerificationEmail(String adminToken, String userId) {
+        return webClient.put()
+                .uri(baseUrl + "/admin/realms/" + realm + "/users/" + userId + "/send-verify-email")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                .retrieve()
+                .toBodilessEntity()
+                .then();
     }
 }
