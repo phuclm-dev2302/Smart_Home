@@ -1,14 +1,16 @@
 package org.example.postservice.service.Impl;
 
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commonevent.common.event.CreatePostDocumentEvent;
 import org.example.commonevent.common.event.CreatePostEvent;
+import org.example.commonevent.common.event.DeleteAmenitiesEvent;
 import org.example.postservice.dto.request.CreateAmenityListRequest;
 import org.example.postservice.dto.request.CreateAmenityRequest;
 import org.example.postservice.dto.request.PostRequest;
 import org.example.postservice.dto.request.UpdatePostRequest;
 import org.example.postservice.dto.response.AmenityResponse;
-import org.example.postservice.dto.response.PostDetailResponse;
 import org.example.postservice.dto.response.PostResponse;
 import org.example.postservice.enums.StatusEnums;
 import org.example.postservice.model.Post;
@@ -16,41 +18,33 @@ import org.example.postservice.model.PostDetail;
 import org.example.postservice.repository.PostDetailRepository;
 import org.example.postservice.repository.PostRepository;
 import org.example.postservice.service.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import org.springframework.kafka.core.KafkaTemplate;
+import reactor.core.scheduler.Schedulers;
 
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class PostServiceImpl implements PostService {
-    @Autowired
-    private PostRepository postRepository;
-    @Autowired
-    private PostDetailRepository postDetailRepository;
-    @Autowired
-    private WebClient.Builder webClientBuilder;
-    @Autowired
-    private KafkaTemplate<String, CreatePostEvent> kafkaTemplate;
-    @Autowired
-    private KafkaTemplate<String, CreatePostDocumentEvent> postDocumentKafkaTemplate;
+    private final PostRepository postRepository;
+    private final PostDetailRepository postDetailRepository;
+    private final WebClient.Builder webClientBuilder;
+    private final KafkaTemplate<String, CreatePostEvent> kafkaTemplate;
+    private final KafkaTemplate<String, CreatePostDocumentEvent> postDocumentKafkaTemplate;
+    private final KafkaTemplate<String, DeleteAmenitiesEvent> deletePostEventKafkaTemplate;
 
     @Override
     public Mono<String> getUserIdFromToken() {
@@ -244,5 +238,43 @@ public class PostServiceImpl implements PostService {
 
         return Mono.just(PostResponse.toDto(savedPost, savedPostDetail, List.of())); // dang de aminities rong
     }
+
+    @Override
+    @Transactional
+    public void deletePost(UUID id) {
+        String token = getTokenFromSecurityContext().toString();
+        if (token == null){
+            throw new RuntimeException("token not found");
+        }
+
+        Post post = postRepository.findById(id)
+                        .orElseThrow(() -> new IllegalArgumentException("Post not found with ID:" +id));
+
+        PostDetail postDetail = postDetailRepository.findById(post.getPostDetailId())
+                        .orElseThrow(() -> new IllegalArgumentException("PostDetail not found with ID:" +post.getPostDetailId()));
+
+        Mono<List<UUID>> idsMono = webClientBuilder.build()
+                .get()
+                .uri("http://amenity-service/api/v1/amenities/post-detail/{id}", postDetail.getId())
+                .retrieve()
+                .bodyToFlux(AmenityResponse.class)
+                .map(AmenityResponse::getId)
+                .collectList();
+
+        idsMono.flatMap(ids -> {
+                    deletePostEventKafkaTemplate.send("delete-amenities-topic", new DeleteAmenitiesEvent(ids));
+                    log.debug("delete-amenities-topic send successfully !");
+
+                    return Mono.fromRunnable(() -> {
+                                postRepository.delete(post);
+                                postDetailRepository.delete(postDetail);
+                            })
+                            .subscribeOn(Schedulers.boundedElastic());
+                })
+                .subscribe();   // khởi động chuỗi (vì phương thức trả về void)
+
+    }
+
+
 
 }
