@@ -12,13 +12,6 @@ spring:
   # Spring Cloud Gateway
   cloud:
     gateway:
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "http://localhost:3000"
-            allowedMethods: "*"
-            allowedHeaders: "*"
-            allowCredentials: true
       discovery:
         locator:
           enabled: true

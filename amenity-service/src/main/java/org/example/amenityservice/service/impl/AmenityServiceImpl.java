@@ -1,17 +1,19 @@
 package org.example.amenityservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.amenityservice.dto.request.CreateAmenityListRequest;
-import org.example.amenityservice.dto.request.CreateAmenityRequest;
 import org.example.amenityservice.model.Amenity;
 import org.example.amenityservice.repository.AmenityRepository;
 import org.example.amenityservice.service.AmenityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class AmenityServiceImpl implements AmenityService {
     @Autowired
@@ -35,4 +37,11 @@ public class AmenityServiceImpl implements AmenityService {
         return amenityRepository.findAllByPostDetailId(id);
     }
 
+    @Override
+    @KafkaListener
+    public void handleDeleteAmenitiesByIds(List<UUID> ids){
+        log.info("Kafka :Received amenities ids ", ids);
+        amenityRepository.deleteAllById(ids);
+        log.info("Delete amenities successfully ");
+    }
 }
