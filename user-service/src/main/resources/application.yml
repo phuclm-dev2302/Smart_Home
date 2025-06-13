@@ -1,0 +1,61 @@
+server:
+  port: 8086
+
+keycloak:
+  admin:
+    username: admin
+    password: admin
+    client-id: spring-cloud-client
+    realm: spring-boot-microservices-realm
+    token-uri: http://localhost:8181/realms/master/protocol/openid-connect/token
+    base-url: http://localhost:8181
+
+spring:
+  application:
+    name: user-service
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: spring-cloud-client
+            client-secret: GNtdeRlkWxKaJyJL5yrrnmuCNaiK9geI
+            authorization-grant-type: password
+            scope: openid
+        provider:
+          keycloak:
+            token-uri: http://localhost:8181/realms/spring-boot-microservices-realm/protocol/openid-connect/token
+
+# Micrometer Tracing + Zipkin
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.security: INFO
+    org.springframework.web.reactive.function.client.ExchangeFunctions: INFO
+    reactor.netty.http.client: INFO
+    reactor.netty: INFO
+    brave: DEBUG
+    org.springframework.cloud.sleuth: DEBUG
+    zipkin2.reporter: DEBUG
+    org.springframework.web.reactive=DEBUG
+    reactor.netty.http.client=DEBUG
