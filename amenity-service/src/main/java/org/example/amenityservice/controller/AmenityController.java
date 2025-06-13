@@ -26,7 +26,9 @@ public class AmenityController {
     public ResponseEntity<List<Amenity>> getAmenitiesByPostDetailId(@PathVariable UUID id){
         return ResponseEntity.ok(amenityService.getByPostDetailId(id));
     }
-
-
-
+//    @DeleteMapping("")
+//    public ResponseEntity<Void> deleteAmenities(@RequestBody List<UUID> ids) {
+//        amenityService.deleteAmenitiesByIds(ids);
+//        return ResponseEntity.noContent().build();
+//    }
 }
