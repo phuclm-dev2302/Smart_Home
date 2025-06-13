@@ -19,7 +19,7 @@ spring:
         registration:
           keycloak:
             client-id: spring-cloud-client
-            client-secret: Or9L8tSJA0e16x08W6kLVYh3lDtNULN7
+            client-secret: bD7OMYdn38bMXjkcyrXBMJRhTIwzr09e
             authorization-grant-type: password
             scope: openid
         provider:
