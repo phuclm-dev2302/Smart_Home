@@ -65,6 +65,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Mono<PostResponse> createPost(PostRequest request) {
         log.info("Received PostRequest: {}", request);
 
@@ -205,6 +206,7 @@ public class PostServiceImpl implements PostService {
         );
     }
     @Override
+    @Transactional
     public Mono<PostResponse> updatePost(UUID id, UpdatePostRequest request){
         log.info("Update Post with id: ", id);
         Post post = postRepository.findById(id)
