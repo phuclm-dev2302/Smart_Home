@@ -1,7 +1,8 @@
 server:
-  port: 8086
+  port: 8087
 
 keycloak:
+  userinfo-uri: http://localhost:8181/realms/spring-boot-microservices-realm/protocol/openid-connect/userinfo
   admin:
     username: admin
     password: admin
@@ -15,16 +16,9 @@ spring:
     name: user-service
   security:
     oauth2:
-      client:
-        registration:
-          keycloak:
-            client-id: spring-cloud-client
-            client-secret: GNtdeRlkWxKaJyJL5yrrnmuCNaiK9geI
-            authorization-grant-type: password
-            scope: openid
-        provider:
-          keycloak:
-            token-uri: http://localhost:8181/realms/spring-boot-microservices-realm/protocol/openid-connect/token
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm
 
 # Micrometer Tracing + Zipkin
 management:
@@ -51,11 +45,10 @@ eureka:
 logging:
   level:
     org.springframework.security: INFO
-    org.springframework.web.reactive.function.client.ExchangeFunctions: INFO
+    org.springframework.web.reactive.function.client.ExchangeFunctions: DEBUG
     reactor.netty.http.client: INFO
     reactor.netty: INFO
     brave: DEBUG
     org.springframework.cloud.sleuth: DEBUG
     zipkin2.reporter: DEBUG
-    org.springframework.web.reactive=DEBUG
-    reactor.netty.http.client=DEBUG
+    org.springframework.web.reactive.function.client: TRACE
