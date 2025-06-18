@@ -53,6 +53,10 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/api/v1/users/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notification/**
 
 # Micrometer Tracing + Zipkin
 management:
