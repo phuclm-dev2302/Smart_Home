@@ -23,7 +23,9 @@ public class Image {
     @Column(nullable = false)
     private UUID postId;
 
-    private String img_url;
+    @Column(nullable = false)
+    private String imageUrl;
+
     private LocalDateTime createdAt;
 
 }
