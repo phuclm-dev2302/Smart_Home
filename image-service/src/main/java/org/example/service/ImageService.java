@@ -10,7 +10,6 @@ import java.util.UUID;
 
 public interface ImageService {
     Mono<List<ImageResponse>> createImages(Flux<FilePart> images, UUID postId);
-//    Flux<ImageResponse> uploadImages(Flux<FilePart> images, UUID postId); // nhiều ảnh
-//    Mono<Void> deleteImageById(UUID imageId); // xoá 1 ảnh
-//    Mono<Void> deleteImagesByPostId(UUID postId); // xoá tất cả ảnh theo post
+    Mono<Void> deleteImageById(UUID imageId); // xoá 1 ảnh
+    Mono<Void> deleteImagesByPostId(UUID postId); // xoá tất cả ảnh theo post
 }

@@ -67,4 +67,33 @@ public class ImageServiceImpl implements ImageService {
                                 .build())
                         .collect(Collectors.toList()));
     }
+    @Override
+    public Mono<Void> deleteImageById(UUID imageId) {
+        return Mono.fromRunnable(() -> {
+            imageRepository.findById(imageId).ifPresent(image -> {
+                try {
+                    Path path = Paths.get("image-service", image.getImageUrl());
+                    Files.deleteIfExists(path);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete image file", e);
+                }
+                imageRepository.deleteById(imageId);
+            });
+        });
+    }
+    @Override
+    public Mono<Void> deleteImagesByPostId(UUID postId) {
+        return Mono.fromRunnable(() -> {
+            List<Image> images = imageRepository.findByPostId(postId);
+            for (Image image : images) {
+                try {
+                    Path path = Paths.get("image-service", image.getImageUrl());
+                    Files.deleteIfExists(path);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete image file: " + image.getImageUrl(), e);
+                }
+                imageRepository.deleteById(image.getId());
+            }
+        });
+    }
 }

@@ -28,4 +28,17 @@ public class ImageController {
         return imageService.createImages(images, UUID.fromString(postId));
     }
 
+    // Xoá 1 ảnh theo imageId
+    @DeleteMapping("/{imageId}")
+    public Mono<ResponseEntity<Void>> deleteImageById(@PathVariable UUID imageId) {
+        return imageService.deleteImageById(imageId)
+                .then(Mono.just(ResponseEntity.noContent().build()));
+    }
+
+    // Xoá tất cả ảnh theo postId
+    @DeleteMapping("/post/{postId}")
+    public Mono<ResponseEntity<Void>> deleteImagesByPostId(@PathVariable UUID postId) {
+        return imageService.deleteImagesByPostId(postId)
+                .then(Mono.just(ResponseEntity.noContent().build()));
+    }
 }
