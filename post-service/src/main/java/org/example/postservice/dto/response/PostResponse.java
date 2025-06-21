@@ -20,8 +20,6 @@ public class PostResponse {
 
     private UUID userId;
 
-    private UUID imageId;
-
     private String title;
     private String description;
     private String address;
