@@ -57,6 +57,17 @@ spring:
           uri: lb://notification-service
           predicates:
             - Path=/api/v1/notification/**
+        - id: image-api
+          uri: lb://image-service
+          predicates:
+            - Path=/api/v1/images/**
+        - id: image-static
+          uri: lb://image-service
+          predicates:
+            - Path=/uploads/image/**
+          filters:
+            - StripPrefix=0
+
 
 # Micrometer Tracing + Zipkin
 management:
