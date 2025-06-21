@@ -107,6 +107,21 @@ services:
     networks:
       - backend
     restart: unless-stopped
+  # PostgreSQL for image-service
+  image-service-db:
+    image: postgres:latest
+    container_name: image-service-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: lam1782004
+      POSTGRES_DB: image-service
+    ports:
+      - "5006:5432"
+    volumes:
+      - image_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
 
 networks:
   backend:
@@ -117,3 +132,4 @@ volumes:
   post_data:
   search_data:
   notification_data:
+  image_data:
