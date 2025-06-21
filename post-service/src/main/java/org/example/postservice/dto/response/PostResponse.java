@@ -38,7 +38,6 @@ public class PostResponse {
                 .id(post.getId())
                 .postDetailId(post.getPostDetailId())
                 .userId(post.getUserId())
-                .imageId(post.getImageId())
                 .title(post.getTitle())
                 .description(post.getDescription())
                 .address(post.getAddress())
