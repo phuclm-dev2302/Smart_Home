@@ -28,9 +28,6 @@ public class Post {
     @Column(nullable = false)
     private UUID userId;
 
-    @Column(nullable = false)
-    private UUID imageId;
-
     private String title;
     private String description;
     private String address;
