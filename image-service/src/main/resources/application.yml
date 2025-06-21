@@ -1,0 +1,64 @@
+spring:
+  web:
+    resources:
+      static-locations: file:uploads/
+  application:
+    name: image-service
+  datasource:
+    url: jdbc:postgresql://localhost:5006/image-service
+    username: postgres
+    password: lam1782004
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm
+
+server:
+  port: 8088
+
+# Register Eureka Server
+eureka:
+  client:
+    service-url:
+      defaultUrl: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+# Zipkin
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+
+# Logging
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web.reactive.function.client.ExchangeFunctions: INFO
+    reactor.netty.http.client: INFO
+    reactor.netty: INFO
+    org.springframework.web: DEBUG
+    org.springframework.validation: DEBUG
+
