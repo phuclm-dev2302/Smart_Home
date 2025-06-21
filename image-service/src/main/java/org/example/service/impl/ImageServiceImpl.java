@@ -27,8 +27,6 @@ public class ImageServiceImpl implements ImageService {
     @Autowired
     private ImageRepository imageRepository;
 
-    private final Path uploadDir = Paths.get("image-service/uploads/image").toAbsolutePath();
-
     @Override
     public Mono<List<ImageResponse>> createImages(Flux<FilePart> images, UUID postId) {
         Path uploadDir = Paths.get("image-service/uploads/image").toAbsolutePath();
