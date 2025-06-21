@@ -20,7 +20,8 @@ public class SecurityConfig {
                 .cors(withDefaults())  // Chỉ bật để Security biết có CORS, header do Gateway trả
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Cho phép preflight
-                        .pathMatchers("/eureka/**", "/api/v1/auth/**").permitAll()
+                        .pathMatchers("/favicon.ico").permitAll()
+                        .pathMatchers("/eureka/**", "/api/v1/auth/**","/uploads/image/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
