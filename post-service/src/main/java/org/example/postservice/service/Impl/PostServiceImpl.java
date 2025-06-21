@@ -111,7 +111,6 @@ public class PostServiceImpl implements PostService {
                     Post post = Post.builder()
                             .postDetailId(postDetail.getId())
                             .userId(UUID.fromString(userId))
-                            .imageId(request.getImageId())
                             .title(request.getTitle())
                             .description(request.getDescription())
                             .address(request.getAddress())
