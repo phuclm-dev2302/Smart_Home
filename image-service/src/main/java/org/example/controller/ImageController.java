@@ -20,6 +20,13 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
+    @GetMapping("/post/{postId}")
+    public Mono<ResponseEntity<List<ImageResponse>>> getImagesByPostId(@PathVariable UUID postId) {
+        return imageService.getImagesByPostId(postId)
+                .map(images -> ResponseEntity.ok(images))
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+    }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<List<ImageResponse>> createImages(
             @RequestPart("img_url") Flux<FilePart> images,

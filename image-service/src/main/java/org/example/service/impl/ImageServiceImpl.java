@@ -28,6 +28,19 @@ public class ImageServiceImpl implements ImageService {
     private ImageRepository imageRepository;
 
     @Override
+    public Mono<List<ImageResponse>> getImagesByPostId(UUID postId) {
+        return Mono.fromCallable(() -> {
+            List<Image> images = imageRepository.findByPostId(postId);
+            if (images.isEmpty()) {
+                throw new RuntimeException("No images found");
+            }
+            return images.stream()
+                    .map(ImageResponse::from)
+                    .toList();
+        });
+    }
+
+    @Override
     public Mono<List<ImageResponse>> createImages(Flux<FilePart> images, UUID postId) {
         Path uploadDir = Paths.get("image-service/uploads/image").toAbsolutePath();
 
