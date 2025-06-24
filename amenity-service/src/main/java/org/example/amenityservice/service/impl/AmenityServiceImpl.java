@@ -37,11 +37,11 @@ public class AmenityServiceImpl implements AmenityService {
         return amenityRepository.findAllByPostDetailId(id);
     }
 
-    @Override
-    @KafkaListener
-    public void handleDeleteAmenitiesByIds(List<UUID> ids){
-        log.info("Kafka :Received amenities ids ", ids);
-        amenityRepository.deleteAllById(ids);
-        log.info("Delete amenities successfully ");
-    }
+//    @Override
+//    @KafkaListener
+//    public void handleDeleteAmenitiesByIds(List<UUID> ids) {
+//        log.info("Kafka :Received amenities ids ", ids);
+//        amenityRepository.deleteAllById(ids);
+//        log.info("Delete amenities successfully ");
+//    }
 }

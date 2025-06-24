@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface AmenityService {
     List<Amenity> createAmenities(CreateAmenityListRequest request);
     List<Amenity> getByPostDetailId(UUID id);
-    void handleDeleteAmenitiesByIds(List<UUID> ids);
+//    void handleDeleteAmenitiesByIds(List<UUID> ids);
 }
