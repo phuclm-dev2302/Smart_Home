@@ -67,6 +67,10 @@ spring:
             - Path=/uploads/image/**
           filters:
             - StripPrefix=0
+        - id: ai-service
+          uri: lb://ai-service
+          predicates:
+            - Path=/api/v1/ai/**
 
 
 # Micrometer Tracing + Zipkin
