@@ -2,6 +2,8 @@ package org.example.searchservice.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class PostSearchRequest {
     // 📌 Must - filter bắt buộc (kiểu keyword / integer)
@@ -20,4 +22,7 @@ public class PostSearchRequest {
     private Double maxPrice;     // double
     private Double minArea;      // double
     private Double maxArea;      // double
+
+    private List<String> amenities; // <-- Thêm dòng này
+
 }

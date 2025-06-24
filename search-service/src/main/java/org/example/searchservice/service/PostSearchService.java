@@ -1,6 +1,7 @@
 package org.example.searchservice.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
@@ -10,24 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.commonevent.common.event.CreatePostDocumentEvent;
 import org.example.searchservice.dto.PostSearchRequest;
 import org.example.searchservice.dto.PostDocument;
-import org.example.searchservice.dto.PostResponse;
-import org.example.searchservice.dto.AmenityResponse;
 import org.example.searchservice.repository.PostElasticsearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,7 +79,17 @@ public class PostSearchService {
         if (request.getPostType() != null) {
             shouldQueries.add(matchQuery("postType", request.getPostType()));
         }
-
+        if (request.getAmenities() != null && !request.getAmenities().isEmpty()) {
+            shouldQueries.add(Query.of(q -> q
+                    .terms(t -> t
+                            .field("amenities.keyword")
+                            .terms(v -> v.value(request.getAmenities().stream()
+                                    .map(FieldValue::of)
+                                    .collect(Collectors.toList())
+                            ))
+                    )
+            ));
+        }
         // Script filter (vì không dùng được rangeQuery)
         if (request.getMinPrice() != null) {
             mustQueries.add(scriptQuery("price", ">=", request.getMinPrice()));
