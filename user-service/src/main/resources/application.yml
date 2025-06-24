@@ -1,5 +1,5 @@
 server:
-  port: 8087
+  port: 8089
 
 keycloak:
   userinfo-uri: http://localhost:8181/realms/spring-boot-microservices-realm/protocol/openid-connect/userinfo
