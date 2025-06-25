@@ -36,7 +36,7 @@ public class AiSearchService {
                                     List<PostLinkDto> postLinks = results.stream()
                                             .map(doc -> new PostLinkDto(
                                                     UUID.fromString(doc.getId()),
-                                                    "http:///post-service/api/v1/posts/" + doc.getId()
+                                                    "http://localhost:3000/posts/" + doc.getId()
                                             ))
                                             .toList();
 

@@ -93,13 +93,13 @@ public class GeminiService {
 
     public Mono<PostSearchRequest> extractSearchRequest(String userQuery, boolean useMemory) {
         String prompt = """
-        Hãy trích xuất thông tin từ câu hỏi sau và trả về JSON với các trường:
-        city, district, postType (chỉ nhận giá trị: HOME, APARTMENT, BUSINESS_PREMISES, ACCOMMODATION),
+        Hãy trích xuất thông tin từ câu hỏi sau và trả về đúng định dạng JSON với các trường:
+        city, district, postType (HOME, APARTMENT, BUSINESS_PREMISES, ACCOMMODATION),
         bedRoom, bathRoom, minPrice, maxPrice, minArea, maxArea, title, description, amenities.
-
-        Trường `amenities` là một mảng các tiện ích (ví dụ: ["Wifi", "Máy lạnh", "Gần trung tâm", "Thang máy"]).
-
-        Ví dụ định dạng:
+        
+        `amenities` là mảng tiện ích (ví dụ: ["Wifi", "Máy lạnh"]).
+        
+        Ví dụ:
         {
           "city": "Hồ Chí Minh",
           "district": "Quận 1",
@@ -115,7 +115,9 @@ public class GeminiService {
           "amenities": ["Wifi", "Máy lạnh"]
         }
 
-        Trả về đúng định dạng JSON như trên. Không thêm mô tả, không bắt đầu bằng ``` hoặc ```json hoặc bất kỳ ký tự thừa nào.
+        ❗️Yêu cầu bắt buộc:
+        - Trả về **duy nhất** đoạn JSON như trên.
+        - ❌ Không được thêm bất kỳ mô tả, markdown, ```json hoặc văn bản nào khác.
 
         Câu hỏi: """ + userQuery;
 
@@ -124,6 +126,12 @@ public class GeminiService {
         return responseMono.map(raw -> {
             String cleaned = cleanJson(raw);
             System.out.println("🧠 Cleaned Gemini JSON:\n" + cleaned);
+
+            // Kiểm tra xem thực sự có phải JSON không
+            if (!isLikelyJson(cleaned)) {
+                throw new RuntimeException("❌ Gemini không trả về JSON hợp lệ:\n" + raw);
+            }
+
             try {
                 JsonElement element = JsonParser.parseString(cleaned);
                 if (!element.isJsonObject()) {
@@ -136,6 +144,12 @@ public class GeminiService {
             }
         });
     }
+
+    private boolean isLikelyJson(String text) {
+        String trimmed = text.trim();
+        return trimmed.startsWith("{") && trimmed.endsWith("}");
+    }
+
 
     private String cleanJson(String raw) {
         String cleaned = raw.trim();
@@ -158,38 +172,40 @@ public class GeminiService {
 
 
     public Mono<String> summarizeSearchResult(String userQuery, List<PostDocument> results, boolean useMemory) {
-        return Mono.fromCallable(() -> {
-            if (results == null || results.isEmpty()) {
-                return "Người dùng hỏi: " + userQuery + "\nHiện tại không có bài đăng nào phù hợp.";
-            }
+        if (results == null || results.isEmpty()) {
+            // Trả về trực tiếp luôn 1 Mono, KHÔNG cần gọi Gemini
+            return Mono.just("Hiện tại không có bài đăng nào phù hợp với nhu cầu tìm kiếm của bạn.");
+        }
 
+        return Mono.fromCallable(() -> {
             PostDocument post = results.get(0); // bài đăng phù hợp nhất
 
             String prompt = String.format("""
-            Người dùng hỏi: %s
+        Dựa vào bài đăng sau, hãy viết một đoạn văn mô tả ngắn gọn, rõ ràng, thân thiện, phù hợp với người đang tìm nhà cho thuê.
+        Hãy tưởng tượng bạn là một chuyên viên tư vấn nhà đất đang trả lời cho khách hàng. KHÔNG TRẢ VỀ DẠNG JSON. Chỉ viết một đoạn văn mô tả...
 
-            Dựa vào bài đăng sau, hãy viết một đoạn văn mô tả ngắn gọn, rõ ràng, thân thiện, phù hợp với ngữ cảnh người tìm nhà cho thuê.
-            Đoạn văn nên bắt đầu bằng: "Chúng tôi đã tìm thấy một bài đăng phù hợp với nhu cầu tìm kiếm của bạn..."
-            Chỉ trả về đoạn văn duy nhất, không liệt kê dạng gạch đầu dòng, không bao gồm lại câu hỏi người dùng.
+        ❗️Yêu cầu bắt buộc:
+        - Viết **một đoạn văn duy nhất**.
+        - ❌ Không xuống dòng, không markdown, không JSON, không bắt đầu bằng ``` hoặc `{}`.
+        - Câu văn phải bắt đầu bằng: **"Chúng tôi đã tìm thấy một bài đăng phù hợp với nhu cầu tìm kiếm của bạn..."**
 
-            Thông tin bài đăng:
-            - Tiêu đề: %s
-            - Mô tả: %s
-            - Địa chỉ: %s, %s, %s, %s
-            - Giá: %,.0f VND
-            - Diện tích: %.1f m²
-            - Phòng ngủ: %d
-            - Phòng vệ sinh: %d
-            - Tiện ích: %s
-            """,
-                    userQuery,
+        Thông tin bài đăng:
+        - Tiêu đề: %s
+        - Mô tả: %s
+        - Địa chỉ: %s, %s, %s, %s
+        - Giá: %,.0f VND
+        - Diện tích: %.1f m²
+        - Phòng ngủ: %d
+        - Phòng vệ sinh: %d
+        - Tiện ích: %s
+        """,
                     post.getTitle(),
                     post.getDescription(),
                     post.getAddress(), post.getWard(), post.getDistrict(), post.getCity(),
-                    post.getPrice(),
-                    post.getArea(),
-                    post.getBedRoom(),
-                    post.getBathRoom(),
+                    post.getPrice() != null ? post.getPrice() : 0,
+                    post.getArea() != null ? post.getArea() : 0,
+                    post.getBedRoom() != null ? post.getBedRoom() : 0,
+                    post.getBathRoom() != null ? post.getBathRoom() : 0,
                     post.getAmenities() != null ? String.join(", ", post.getAmenities()) : "Không rõ"
             );
 
