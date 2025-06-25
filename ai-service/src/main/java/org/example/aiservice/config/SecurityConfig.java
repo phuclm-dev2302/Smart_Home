@@ -17,7 +17,7 @@ public class SecurityConfig {
         http
                 .csrf(csrfSpec -> csrfSpec.disable())
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/api/v1/ai/**").authenticated() // ac thuc cho api post
+                        .pathMatchers("/api/v1/ai/**").permitAll() // ac thuc cho api post
                         .anyExchange().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
         return http.build();
