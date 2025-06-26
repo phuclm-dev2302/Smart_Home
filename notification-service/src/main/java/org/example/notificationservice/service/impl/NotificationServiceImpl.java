@@ -47,6 +47,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setStatus(NotificationStatus.READ);
         notification.setIsSeen(true);
         notification.setReadAt(LocalDateTime.now());
+        notificationRepository.save(notification);
         return NotificationResponse.from(notification);
     }
     @Override
