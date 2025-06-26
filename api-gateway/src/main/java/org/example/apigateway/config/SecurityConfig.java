@@ -21,8 +21,8 @@ public class SecurityConfig {
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Cho phép preflight
                         .pathMatchers("/favicon.ico").permitAll()
-                        .pathMatchers("/eureka/**", "/api/v1/auth/**","/uploads/image/**").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
+                        .pathMatchers("/eureka/**", "/api/v1/auth/**","/uploads/images/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/v1/posts/**","/api/v1/image/**").permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/v1/ai/**").permitAll()
                         .anyExchange().authenticated()
                 )
