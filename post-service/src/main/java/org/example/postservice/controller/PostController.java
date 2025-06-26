@@ -35,6 +35,11 @@ public class PostController {
         return postService.getPostById(id);
     }
 
+    @GetMapping("/user/{userId}")
+    public Mono<List<PostResponse>> getPostByUserId(@PathVariable UUID userId) {
+        return postService.getPostByUserId(userId);
+    }
+
     @GetMapping("")
     public Mono<List<PostResponse>> getAllPost(
             @RequestParam(defaultValue = "0") int page,

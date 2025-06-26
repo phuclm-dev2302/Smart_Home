@@ -12,6 +12,7 @@ public interface PostService {
     Mono<String> getUserIdFromToken();
     Mono<PostResponse> createPost(PostRequest request);
     Mono<PostResponse> getPostById(UUID id);
+    Mono<List<PostResponse>> getPostByUserId(UUID id);
     Mono<List<PostResponse>> getAllPost(int page, int size);
     Mono<PostResponse> updatePost(UUID id, UpdatePostRequest request);
     void deletePost(UUID id);

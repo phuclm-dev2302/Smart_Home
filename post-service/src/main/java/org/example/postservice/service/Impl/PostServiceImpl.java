@@ -177,6 +177,34 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Mono<List<PostResponse>> getPostByUserId(UUID userId) {
+        List<Post> posts = postRepository.findByUserId(userId);
+        if (posts == null || posts.isEmpty()) {
+            throw new RuntimeException("No posts found with userId: " + userId);
+        }
+
+        List<Mono<PostResponse>> postResponseMonos = posts.stream().map(post -> {
+            PostDetail postDetail = postDetailRepository.findById(post.getPostDetailId())
+                    .orElseThrow(() -> new RuntimeException("PostDetail not found for postId: " + post.getId()));
+
+            Mono<List<AmenityResponse>> amenityMono = webClientBuilder.build()
+                    .get()
+                    .uri("http://amenity-service/api/v1/amenities/post-detail/{id}", postDetail.getId())
+                    .retrieve()
+                    .bodyToFlux(AmenityResponse.class)
+                    .collectList()
+                    .onErrorReturn(List.of());
+
+            return amenityMono.map(amenities -> PostResponse.toDto(post, postDetail, amenities));
+        }).toList();
+
+        return Mono.zip(postResponseMonos, objects -> Arrays.stream(objects)
+                .map(obj -> (PostResponse) obj)
+                .collect(Collectors.toList()));
+    }
+
+
+    @Override
     public Mono<List<PostResponse>> getAllPost(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Post> posts = postRepository.findAll(pageable).getContent();
